@@ -14,7 +14,7 @@ interface Country {
 
 const Search = () => {
 const [country,setCountry]=useState<string>('')
-const [data,setData]=useState<any>();
+const [data,setData]=useState<Country[]>([]);
 const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
 const [currentPage, setCurrentPage] = useState<number>(0);
 const [region, setRegion] = useState<string>('');
@@ -67,23 +67,15 @@ const chooseRegion=(e:any)=>{
 
 useEffect(()=>{
   if(region!==''){
-    /*
-      axios.get(`https://restcountries.com/v2/region/${region}`)
-      .then(response=>{
-        setFilteredRegions(response.data);
-        console.log(response.data)
-      }).catch(error=>{
-        console.log(error);
-      })
-      */
      const filter= data.filter((country:any) =>
       country.region.toLowerCase().includes(region.toLowerCase())
     );
     setFilteredRegions(filter);
-    }
+  }else{
+    setFilteredRegions([]);
+  }
 }, [region])
   
-
   return (
     <>
     <Wrapper>
@@ -92,7 +84,7 @@ useEffect(()=>{
               type='text' 
               placeholder='Search for a country…'/>
        <Select onChange={chooseRegion} value={region}>
-          <option value=''>choose region</option>
+          <option value=''>Filter by Region</option>
           <option value="europe">Europe</option>
           <option value="asia">Asia</option>
           <option value="africa">Africa</option>
@@ -104,11 +96,15 @@ useEffect(()=>{
         <div>
           {filteredCountries.map((country,index) => (
             <InfoBox key={index}>
-              <img src={country.flag} alt='flag'/>
-                   <h1>{country.name}</h1>
-                   <p>{country.population}</p>
-                   <p>{country.region}</p>
-                   <p>{country.capital}</p>
+                    <ImgBox>
+                      <img src={country.flag} alt='flag'/>
+                    </ImgBox>
+                  <Info>
+                    <h1>{country.name}</h1>
+                    <p><span>Population:</span>{country.population}</p>
+                    <p><span>Region:</span>{country.region}</p>
+                    <p><span>Capital:</span>{country.capital}</p>
+                  </Info>
             </InfoBox>
           ))}
         </div>
@@ -116,43 +112,49 @@ useEffect(()=>{
           <GridContainer>
             {filteredRegion.map((itm,index)=>(
             <InfoBox key={index}>
-              <img src={itm.flag} alt='flag'/>
-              <h1>{itm.name}</h1>
-              <p>{itm.population}</p>
-              <p>{itm.region}</p>
-              <p>{itm.capital}</p>
+              <ImgBox>
+                 <img src={itm.flag} alt='flag'/>
+              </ImgBox>
+              <Info>
+                <h1>{itm.name}</h1>
+                <p><span>Population:</span>{itm.population}</p>
+                <p><span>Region:</span>{itm.region}</p>
+                <p><span>Capital:</span>{itm.capital}</p>
+              </Info> 
            </InfoBox>
             ))}
           </GridContainer>
         ):(
           <GridContainer>
-          {itemsToShow?.map((item:any,index:number)=>(
+          {itemsToShow?.map((item,index)=>(
                   <InfoBox key={index}>
                     <ImgBox>
                       <img src={item.flag} alt='flag'/>
                     </ImgBox>
-                     <h1>{item.name}</h1>
-                     <p>{item.population}</p>
-                     <p>{item.region}</p>
-                     <p>{item.capital}</p>
+                    <Info> 
+                       <h1>{item.name}</h1>
+                       <p><span>Population:</span>{item.population}</p>
+                       <p><span>Region:</span>{item.region}</p>
+                       <p><span>Capital:</span>{item.capital}</p>
+                    </Info>  
                   </InfoBox>
           ))}
           </GridContainer> 
         )
        } 
-       { !(filteredRegion.length>0) &&
-    <PaginateContainer>
-     <ReactPaginate
-      previousLabel={'<'}
-      nextLabel={'>'}
-      pageCount={Math.ceil(data?.length / itemsPerPage)}
-      pageRangeDisplayed={2}
-      marginPagesDisplayed={2}
-      onPageChange={handlePageChange}
-      activeClassName={'active'}
-      />
-    </PaginateContainer>
-    }
+       {!(filteredRegion.length>0) &&
+      <PaginateContainer>
+        <ReactPaginate
+          previousLabel={'<'}
+          nextLabel={'>'}
+          pageCount={Math.ceil(data?.length / itemsPerPage)}
+          pageRangeDisplayed={2}
+          marginPagesDisplayed={2}
+          onPageChange={handlePageChange}
+          activeClassName={'active'}
+          />
+       </PaginateContainer>
+      }
     </>
   )
 }
@@ -221,6 +223,19 @@ const ImgBox=styled.div`
   & img{
     width:270px;
     height:160px;
+  }
+`
+const Info=styled.div`
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:20px;
+
+  & h1{
+    font-size:24px;
+  }
+  & p span{
+    font-weight:bold;
   }
 `
 
