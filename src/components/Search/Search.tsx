@@ -17,6 +17,8 @@ const [country,setCountry]=useState<string>('')
 const [data,setData]=useState<any>();
 const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
 const [currentPage, setCurrentPage] = useState<number>(0);
+const [region, setRegion] = useState<string>('');
+const [filteredRegion, setFilteredRegions] = useState<Country[]>([]);
 const itemsPerPage=8;
 
 //get all countries when component mounts
@@ -58,6 +60,30 @@ const handlePageChange = ({selected}:any) => {
   setCurrentPage(selected);
 };
 
+const chooseRegion=(e:any)=>{
+  const getRegion=(e.target.value);
+  setRegion(getRegion);
+}
+
+useEffect(()=>{
+  if(region!==''){
+    /*
+      axios.get(`https://restcountries.com/v2/region/${region}`)
+      .then(response=>{
+        setFilteredRegions(response.data);
+        console.log(response.data)
+      }).catch(error=>{
+        console.log(error);
+      })
+      */
+     const filter= data.filter((country:any) =>
+      country.region.toLowerCase().includes(region.toLowerCase())
+    );
+    setFilteredRegions(filter);
+    }
+}, [region])
+  
+
   return (
     <>
     <Wrapper>
@@ -65,8 +91,13 @@ const handlePageChange = ({selected}:any) => {
               onChange={handleSearch}
               type='text' 
               placeholder='Search for a country…'/>
-       <Select>
-          <option value="option1">Option 1</option>
+       <Select onChange={chooseRegion} value={region}>
+          <option value=''>choose region</option>
+          <option value="europe">Europe</option>
+          <option value="asia">Asia</option>
+          <option value="africa">Africa</option>
+          <option value="america">America</option>
+          <option value="oceania">Oceania</option>
        </Select>
     </Wrapper>
     {filteredCountries.length>0?(
@@ -81,19 +112,35 @@ const handlePageChange = ({selected}:any) => {
             </InfoBox>
           ))}
         </div>
-      ) : (
-        <GridContainer>
-        {itemsToShow?.map((item:any,index:number)=>(
-                <InfoBox key={index}>
-                   <img src={item.flag} alt='flag'/>
-                   <h1>{item.name}</h1>
-                   <p>{item.population}</p>
-                   <p>{item.region}</p>
-                   <p>{item.capital}</p>
-                </InfoBox>
-        ))}
-        </GridContainer>  
-      )} 
+      ): filteredRegion.length>0?(
+          <GridContainer>
+            {filteredRegion.map((itm,index)=>(
+            <InfoBox key={index}>
+              <img src={itm.flag} alt='flag'/>
+              <h1>{itm.name}</h1>
+              <p>{itm.population}</p>
+              <p>{itm.region}</p>
+              <p>{itm.capital}</p>
+           </InfoBox>
+            ))}
+          </GridContainer>
+        ):(
+          <GridContainer>
+          {itemsToShow?.map((item:any,index:number)=>(
+                  <InfoBox key={index}>
+                    <ImgBox>
+                      <img src={item.flag} alt='flag'/>
+                    </ImgBox>
+                     <h1>{item.name}</h1>
+                     <p>{item.population}</p>
+                     <p>{item.region}</p>
+                     <p>{item.capital}</p>
+                  </InfoBox>
+          ))}
+          </GridContainer> 
+        )
+       } 
+       { !(filteredRegion.length>0) &&
     <PaginateContainer>
      <ReactPaginate
       previousLabel={'<'}
@@ -105,6 +152,7 @@ const handlePageChange = ({selected}:any) => {
       activeClassName={'active'}
       />
     </PaginateContainer>
+    }
     </>
   )
 }
@@ -156,12 +204,20 @@ export const GridContainer=styled.div`
   display:grid;
   grid-template-columns:1fr 1fr 1fr 1fr;
   padding:0 70px;
-  gap:10px;
+  column-gap:10px;
+  row-gap:50px;
 `
 export const InfoBox=styled.div`
   width:270px;
   height:340px;
-
+  background-color:#fff;
+`
+const ImgBox=styled.div`
+  width:270px;
+  height:160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   & img{
     width:270px;
     height:160px;
