@@ -1,8 +1,11 @@
 import React, {useState,useEffect}from 'react'
 import styled from 'styled-components'
 import search from '../../assets/search.svg'
-import axios from 'axios';
 import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AppContext } from '../../App';
+
 
 interface Country {
   name: string;
@@ -14,25 +17,13 @@ interface Country {
 
 const Search = () => {
 const [country,setCountry]=useState<string>('')
-const [data,setData]=useState<Country[]>([]);
 const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
 const [currentPage, setCurrentPage] = useState<number>(0);
 const [region, setRegion] = useState<string>('');
 const [filteredRegion, setFilteredRegions] = useState<Country[]>([]);
 const itemsPerPage=8;
 
-//get all countries when component mounts
-useEffect(()=>{
-   const getAllCountries=async()=>{
-    try{
-    const {data}=await axios.get('https://restcountries.com/v2/all');
-      setData(data);
-    } catch (error){
-        console.log(error);
-    }
-   }
-   getAllCountries();
-},[])
+const data = useContext(AppContext);
 
 const handleSearch = (event:any) => {
   const term = event.target.value;
@@ -75,6 +66,11 @@ useEffect(()=>{
     setFilteredRegions([]);
   }
 }, [region])
+
+const navigate=useNavigate();
+const navigatePage=(id:string)=>{
+  navigate(`/country/${id}`)
+}
   
   return (
     <>
@@ -95,39 +91,39 @@ useEffect(()=>{
     {filteredCountries.length>0?(
         <div>
           {filteredCountries.map((country,index) => (
-            <InfoBox key={index}>
-                    <ImgBox>
-                      <img src={country.flag} alt='flag'/>
-                    </ImgBox>
-                  <Info>
-                    <h1>{country.name}</h1>
-                    <p><span>Population:</span>{country.population}</p>
-                    <p><span>Region:</span>{country.region}</p>
-                    <p><span>Capital:</span>{country.capital}</p>
-                  </Info>
-            </InfoBox>
+            <InfoBox key={index} onClick={()=>navigatePage(country.name)}>
+            <ImgBox>
+              <img src={country.flag} alt='flag'/>
+            </ImgBox>
+            <Info> 
+               <h1>{country.name}</h1>
+               <p><span>Population:</span>{country.population}</p>
+               <p><span>Region:</span>{country.region}</p>
+               <p><span>Capital:</span>{country.capital}</p>
+            </Info>  
+          </InfoBox>
           ))}
         </div>
       ): filteredRegion.length>0?(
           <GridContainer>
             {filteredRegion.map((itm,index)=>(
-            <InfoBox key={index}>
-              <ImgBox>
-                 <img src={itm.flag} alt='flag'/>
-              </ImgBox>
-              <Info>
-                <h1>{itm.name}</h1>
-                <p><span>Population:</span>{itm.population}</p>
-                <p><span>Region:</span>{itm.region}</p>
-                <p><span>Capital:</span>{itm.capital}</p>
-              </Info> 
-           </InfoBox>
+            <InfoBox key={index} onClick={()=>navigatePage(itm.name)}>
+            <ImgBox>
+              <img src={itm.flag} alt='flag'/>
+            </ImgBox>
+            <Info> 
+               <h1>{itm.name}</h1>
+               <p><span>Population:</span>{itm.population}</p>
+               <p><span>Region:</span>{itm.region}</p>
+               <p><span>Capital:</span>{itm.capital}</p>
+            </Info>  
+          </InfoBox>
             ))}
           </GridContainer>
         ):(
           <GridContainer>
-          {itemsToShow?.map((item,index)=>(
-                  <InfoBox key={index}>
+          {itemsToShow?.map((item:any,index:number)=>(
+                  <InfoBox key={index} onClick={()=>navigatePage(item.name)}>
                     <ImgBox>
                       <img src={item.flag} alt='flag'/>
                     </ImgBox>
@@ -137,7 +133,7 @@ useEffect(()=>{
                        <p><span>Region:</span>{item.region}</p>
                        <p><span>Capital:</span>{item.capital}</p>
                     </Info>  
-                  </InfoBox>
+                  </InfoBox> 
           ))}
           </GridContainer> 
         )
@@ -173,6 +169,10 @@ const Wrapper=styled.div`
   padding: 20px 40px;
 }
 `
+
+interface Theme{
+  theme:string;
+}
 const Input =styled.input`
     width:480px;
     height:60px;
@@ -201,7 +201,6 @@ const Select=styled.select`
   align-self:flex-start;
 }
 `
-
 export const GridContainer=styled.div`
   display:grid;
   grid-template-columns:1fr 1fr 1fr 1fr;
