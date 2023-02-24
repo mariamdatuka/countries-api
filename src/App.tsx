@@ -4,12 +4,21 @@ import { GlobalStyles } from "./GlobalStyles"
 import { createBrowserRouter,RouterProvider, Route, createRoutesFromElements } from "react-router-dom"
 import MoreInfo from "./components/MoreInfo"
 import axios from "axios"
-import { Data } from "./Types"
+import { Data, AppContextType } from "./Types"
 
-export const AppContext =createContext([]);
+export const AppContext =createContext<AppContextType>({
+  data:[],
+  lightTheme:true,
+  toggleTheme:()=>{}
+});
 
 function App() {
   const [data,setData]=useState<Data[]>([]);
+  const [lightTheme, setLightTheme] = useState<boolean>(true);
+
+  const toggleTheme = () => setLightTheme((prev) => !prev);
+
+
   const router=createBrowserRouter(
     createRoutesFromElements(
        <>
@@ -34,9 +43,9 @@ useEffect(()=>{
 
   return (
   <>
-    <AppContext.Provider value={data}>
+    <AppContext.Provider value={{data, lightTheme,toggleTheme}}>
       <RouterProvider router={router}/>
-      <GlobalStyles/>
+      <GlobalStyles lightTheme={lightTheme}/>
     </AppContext.Provider>
   </>
   )

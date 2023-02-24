@@ -1,12 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
+import { AppContext } from '../../App'
+import {useContext} from 'react';
 
 const Theme = () => {
+
+    const {lightTheme,toggleTheme} = useContext(AppContext);
+
   return (
     <>
-     <Wrapper>
+     <Wrapper lightTheme={lightTheme}>
          <h1>Where in the World?</h1>
-         <Button>
+         <Button onClick={toggleTheme} lightTheme={lightTheme}>
             <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
              <path fill-rule="evenodd" clip-rule="evenodd" d="M12.5532 11.815C8.66857 11.815 5.51929 8.92783 5.51929 5.36821C5.51929 4.0253 5.96679 2.78158 6.73143 1.75C3.69036 2.69515 1.5 5.33122 1.5 8.43807C1.5 12.3385 4.94929 15.5 9.20357 15.5C12.5929 15.5 15.4696 13.4932 16.5 10.7045C15.375 11.4048 14.0161 11.815 12.5532 11.815Z" fill="white" stroke="#111517" stroke-width="1.25"/>
             </svg>
@@ -19,17 +24,20 @@ const Theme = () => {
 
 export default Theme
 
-const Wrapper=styled.div`
+const Wrapper=styled.div<{lightTheme:boolean}>`
     display:flex;
     padding: 20px 70px 20px 70px;
     align-items:center;
     justify-content:space-between;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-    background-color:#ffffff;
-    
+    background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
+    transition: background-color 0.3s ease-in-out;
+
     & h1 {
         font-size:24px;
         font-weight:800;
+        color:${props=>(props.lightTheme?'#111517':'#fff')};
+        transition:color 0.3s ease-in-out;
     }
 
     @media screen and (max-width:420px){
@@ -40,15 +48,15 @@ const Wrapper=styled.div`
         }
     }
 `
-const Button=styled.button`
+const Button=styled.button<{lightTheme:boolean}>`
     display:flex;
     place-items:center;
     gap:5px;
     border:none;
     width:100px;
-    background-color:#ffffff;
+    color:${props=>(props.lightTheme?'#111517':'#fff')};
+    background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
     cursor:pointer;
-
     @media screen and (max-width:420px){
         font-size:12px;
     }

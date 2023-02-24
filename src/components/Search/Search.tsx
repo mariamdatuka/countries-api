@@ -5,31 +5,25 @@ import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import { AppContext } from '../../App';
-
-
-interface Country {
-  name: string;
-  capital: string;
-  population: number;
-  region:string;
-  flag:string; 
-};
+import { Data } from '../../Types';
+import Theme from '../Theme/Theme';
 
 const Search = () => {
 const [country,setCountry]=useState<string>('')
-const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
+const [filteredCountries, setFilteredCountries] = useState<Data[]>([]);
 const [currentPage, setCurrentPage] = useState<number>(0);
 const [region, setRegion] = useState<string>('');
-const [filteredRegion, setFilteredRegions] = useState<Country[]>([]);
+const [filteredRegion, setFilteredRegions] = useState<Data[]>([]);
 const itemsPerPage=8;
 
-const data = useContext(AppContext);
+const {data, lightTheme,toggleTheme} = useContext(AppContext);
+
 
 const handleSearch = (event:any) => {
   const term = event.target.value;
   setCountry(term);
   // Filter the list of all countries based on the search term
-  const filtered = data.filter((country:any) =>
+  const filtered = data?.filter((country:any) =>
     country.name.toLowerCase().includes(term.toLowerCase())
   );
   setFilteredCountries(filtered);
@@ -74,12 +68,14 @@ const navigatePage=(id:string)=>{
   
   return (
     <>
-    <Wrapper>
+     <Theme/>
+      <Wrapper>
        <Input value={country}
+              lightTheme={lightTheme}
               onChange={handleSearch}
               type='text' 
               placeholder='Search for a country…'/>
-       <Select onChange={chooseRegion} value={region}>
+       <Select onChange={chooseRegion} value={region} lightTheme={lightTheme}>
           <option value=''>Filter by Region</option>
           <option value="europe">Europe</option>
           <option value="asia">Asia</option>
@@ -91,7 +87,7 @@ const navigatePage=(id:string)=>{
     {filteredCountries.length>0?(
         <div>
           {filteredCountries.map((country,index) => (
-            <InfoBox key={index} onClick={()=>navigatePage(country.name)}>
+            <InfoBox lightTheme={lightTheme} key={index} onClick={()=>navigatePage(country.name)}>
             <ImgBox>
               <img src={country.flag} alt='flag'/>
             </ImgBox>
@@ -107,7 +103,7 @@ const navigatePage=(id:string)=>{
       ): filteredRegion.length>0?(
           <GridContainer>
             {filteredRegion.map((itm,index)=>(
-            <InfoBox key={index} onClick={()=>navigatePage(itm.name)}>
+            <InfoBox lightTheme={lightTheme} key={index} onClick={()=>navigatePage(itm.name)}>
             <ImgBox>
               <img src={itm.flag} alt='flag'/>
             </ImgBox>
@@ -123,7 +119,7 @@ const navigatePage=(id:string)=>{
         ):(
           <GridContainer>
           {itemsToShow?.map((item:any,index:number)=>(
-                  <InfoBox key={index} onClick={()=>navigatePage(item.name)}>
+                  <InfoBox lightTheme={lightTheme} key={index} onClick={()=>navigatePage(item.name)}>
                     <ImgBox>
                       <img src={item.flag} alt='flag'/>
                     </ImgBox>
@@ -139,7 +135,7 @@ const navigatePage=(id:string)=>{
         )
        } 
        {!(filteredRegion.length>0) &&
-      <PaginateContainer>
+      <PaginateContainer lightTheme={lightTheme}>
         <ReactPaginate
           previousLabel={'<'}
           nextLabel={'>'}
@@ -173,7 +169,7 @@ const Wrapper=styled.div`
 interface Theme{
   theme:string;
 }
-const Input =styled.input`
+const Input =styled.input<{lightTheme:boolean}>`
     width:480px;
     height:60px;
     border-radius:6px;
@@ -182,21 +178,24 @@ const Input =styled.input`
     background-repeat:no-repeat;
     background-position:bottom 20px left 10px;
     border:none;
-    background-color:#ffffff;
+    background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
+    transition: background-color 0.5s ease-in-out;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 
     @media screen and (max-width:420px) {
       width:330px;
    }
 `
-const Select=styled.select`
+const Select=styled.select<{lightTheme:boolean}>`
   width:200px;
   height:60px;
   border-radius:6px;
   cursor: pointer;
   border:none;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-
+  background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
+  transition: all 0.3s ease-in-out;
+  color:${props=>(props.lightTheme?'#232323':'#809396')};
   @media screen and (max-width:420px) {
   align-self:flex-start;
 }
@@ -208,10 +207,11 @@ export const GridContainer=styled.div`
   column-gap:10px;
   row-gap:50px;
 `
-export const InfoBox=styled.div`
+export const InfoBox=styled.div<{lightTheme:boolean}>`
   width:270px;
   height:340px;
-  background-color:#fff;
+  background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
+  transition: all 0.3s ease-in-out;
 `
 const ImgBox=styled.div`
   width:270px;
@@ -238,7 +238,7 @@ const Info=styled.div`
   }
 `
 
-const PaginateContainer = styled.div`
+const PaginateContainer = styled.div<{lightTheme:boolean}>`
   display: flex;
   justify-content: center;
   margin-top: 20px;
@@ -257,15 +257,11 @@ const PaginateContainer = styled.div`
         padding: 10px 10px;
         border: 1px solid #ccc;
         text-decoration: none;
-        color: #333;
+        color:${props=>(props.lightTheme?'#2B3844':'#fff')};
+        transition: all 0.3s ease-in-out;
         cursor:pointer;
         font-size:12px;
         font-weight:bold;
-
-        &.active {
-          background-color: #4caf50 !important;
-          color: white;
-        }
       }
     }
   }

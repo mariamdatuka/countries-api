@@ -1,6 +1,6 @@
 import { createGlobalStyle} from "styled-components";
 
-export const GlobalStyles=createGlobalStyle`
+export const GlobalStyles=createGlobalStyle<{lightTheme:boolean}>`
     *{
         margin:0;
         padding:0;
@@ -10,8 +10,7 @@ export const GlobalStyles=createGlobalStyle`
     body{
         font-family:'Nunito Sans', sans-serif;
         font-size:'14px';
-        background-color:#F2F2F2;
-    }
-    
-   
+        background-color:${props=>(props.lightTheme?'#fff':'#202C36')};
+        color:${props=>(props.lightTheme?'#111517':'#fff')};
+    } 
 `

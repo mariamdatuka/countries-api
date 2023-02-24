@@ -8,7 +8,9 @@ export interface Languages{
 
  export type Domain=string[];
 
-export interface Data {
+ export type Borders=string[];
+
+ export interface Data {
     name: string;
     capital: string;
     population: number;
@@ -19,6 +21,11 @@ export interface Data {
     currencies?:Currencies[],
     languages?:Languages[],
     topLevelDomain?:Domain,
+    borders?:Borders,
   }[]
-
- 
+  
+  export interface AppContextType {
+    data: Data[];
+    lightTheme:boolean;
+    toggleTheme:()=>void;
+  };
