@@ -10,7 +10,7 @@ export const GlobalStyles=createGlobalStyle<{lightTheme:boolean}>`
     body{
         font-family:'Nunito Sans', sans-serif;
         font-size:'14px';
-        background-color:${props=>(props.lightTheme?'#fff':'#202C36')};
+        background-color:${props=>(props.lightTheme?'#f2f2f2':'#202C36')};
         color:${props=>(props.lightTheme?'#111517':'#fff')};
     } 
 `

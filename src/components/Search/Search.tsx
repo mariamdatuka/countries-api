@@ -181,7 +181,7 @@ const Input =styled.input<{lightTheme:boolean}>`
     background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
     transition: background-color 0.5s ease-in-out;
     box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-
+  
     @media screen and (max-width:420px) {
       width:330px;
    }
@@ -202,6 +202,7 @@ const Select=styled.select<{lightTheme:boolean}>`
 `
 export const GridContainer=styled.div`
   display:grid;
+  place-items:center;
   grid-template-columns:1fr 1fr 1fr 1fr;
   padding:0 70px;
   column-gap:10px;
@@ -210,6 +211,7 @@ export const GridContainer=styled.div`
 export const InfoBox=styled.div<{lightTheme:boolean}>`
   width:270px;
   height:340px;
+  border-radius:15px;
   background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
   transition: all 0.3s ease-in-out;
 `
