@@ -19,7 +19,7 @@ const MoreInfo = () => {
         <ImgBox>
           <img src={country.flag} alt='flag'/>
         </ImgBox>
-     <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>  
+     <div style={{display:'flex', flexDirection:'column', gap:'20px', alignItems:'center', justifyContent:'center'}}>  
       <InfoBox>
        <MainInfo>
            <h1>{country.name}</h1>
@@ -74,11 +74,20 @@ const Wrapper=styled.div`
   justify-content:center;
   gap:50px;
   height:100vh;
+
+  @media screen and (max-width:420px){
+  flex-direction:column;
+  margin-top:70px;
+ }
 `
 const ImgBox=styled.div`
   width:500px;
  & img {
   width:100%;
+ }
+
+ @media screen and (max-width:420px){
+   width:300px;
  }
 `
 const InfoBox=styled.div`
@@ -86,6 +95,11 @@ const InfoBox=styled.div`
   align-items:center;
   justify-content:center;
   gap:100px;
+
+  @media screen and (max-width:420px){
+    flex-direction:column;
+    gap:20px;
+  }
 `
 const MainInfo=styled.div`
   display:flex;
@@ -99,6 +113,8 @@ const MainInfo=styled.div`
 const Additional=styled.div`
   display:flex;
   flex-direction:column;
+  align-items:center;
+  justify-content:center;
   gap:10px;
 `
 const Extra=styled.div<{lightTheme:boolean}>`

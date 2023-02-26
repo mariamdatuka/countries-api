@@ -196,6 +196,7 @@ const Select=styled.select<{lightTheme:boolean}>`
   background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
   transition: all 0.3s ease-in-out;
   color:${props=>(props.lightTheme?'#232323':'#809396')};
+
   @media screen and (max-width:420px) {
   align-self:flex-start;
 }
@@ -207,6 +208,11 @@ export const GridContainer=styled.div`
   padding:0 70px;
   column-gap:10px;
   row-gap:50px;
+
+  @media screen and (max-width:420px){
+    grid-template-columns:1fr;
+    padding:0 50px;
+  }
 `
 export const InfoBox=styled.div<{lightTheme:boolean}>`
   width:270px;
@@ -214,6 +220,10 @@ export const InfoBox=styled.div<{lightTheme:boolean}>`
   border-radius:15px;
   background-color:${props=>(props.lightTheme?'#fff':'#2B3844')};
   transition: all 0.3s ease-in-out;
+
+  &:hover{
+    transform: scale(1.05);
+  }
 `
 const ImgBox=styled.div`
   width:270px;
